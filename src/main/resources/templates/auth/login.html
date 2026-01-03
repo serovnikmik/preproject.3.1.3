@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход в систему</title>
+    <style>
+        .error { color: red; }
+        .logout { color: green; }
+        .container { max-width: 400px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="password"] { width: 100%; padding: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .links { margin-top: 20px; text-align: center; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Вход в систему</h1>
+
+    <!-- Сообщение об ошибке -->
+    <div th:if="${param.error}" class="error">
+        Неправильное имя пользователя или пароль
+    </div>
+
+    <!-- Сообщение об успешном выходе -->
+    <div th:if="${param.logout}" class="logout">
+        Вы успешно вышли из системы
+    </div>
+
+    <!-- Форма логина (ОБРАТИ ВНИМАНИЕ: action="/login", method="post") -->
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Имя пользователя:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit">Войти</button>
+    </form>
+
+    <div class="links">
+        <a th:href="@{/}">На главную страницу</a>
+    </div>
+</div>
+</body>
+</html>

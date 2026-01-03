@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать пользователя</title>
+</head>
+<body>
+<div th:replace="common/navbar :: navbar"></div>
+<br><br>
+<h1>Создать пользователя</h1>
+
+<form th:method="POST" th:action="@{/admin/create}" th:object="${user}">
+
+    <label for="name">Имя:</label>
+    <input type="text" th:field="*{name}" id="name">
+    <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    <br><br>
+
+    <label for="age">Возраст:</label>
+    <input type="number" th:field="*{age}" id="age">
+    <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    <br><br>
+
+    <label for="email">Email:</label>
+    <input type="email" th:field="*{email}" id="email">
+    <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    <br><br>
+
+    <label for="username">Логин:</label>
+    <input type="text" th:field="*{username}" id="username">
+    <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+    <br><br>
+
+    <label for="password">Пароль:</label>
+    <input type="password" th:field="*{password}" id="password">
+    <br><br>
+
+    <label>Роли:</label><br>
+    <!-- Для ролей оставляем как есть, так как они не в объекте User -->
+    <input type="checkbox" id="role_admin" name="roleIds" value="1">
+    <label for="role_admin">ROLE_ADMIN</label><br>
+
+    <input type="checkbox" id="role_user" name="roleIds" value="2" checked>
+    <label for="role_user">ROLE_USER</label><br><br>
+
+    <button type="submit">Создать</button>
+    <a th:href="@{/admin}">Отмена</a>
+</form>
+</body>
+</html>

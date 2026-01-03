@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .guest { background-color: #f0f0f0; padding: 20px; border-radius: 5px; }
+        .user { background-color: #e6f7ff; padding: 20px; border-radius: 5px; }
+        .admin { background-color: #fff0e6; padding: 20px; border-radius: 5px; }
+        .btn { display: inline-block; padding: 10px 15px; margin: 5px; background-color: #007bff; color: white; text-decoration: none; border-radius: 3px; }
+        .btn:hover { background-color: #0056b3; }
+        .btn-logout { background-color: #dc3545; }
+        .btn-logout:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+<!--<div th:if="${#authorization.expression('isAuthenticated()')}">-->
+<!--    <div th:replace="common/navbar :: navbar"></div>-->
+<!--</div>-->
+<!--<br><br>-->
+<h1>Добро пожаловать в систему!</h1>
+
+<!-- Блок для НЕ авторизованных пользователей -->
+<div th:if="${#authorization.expression('!isAuthenticated()')}" class="guest">
+    <h2>Вы не авторизованы</h2>
+    <p>Пожалуйста, войдите в систему:</p>
+    <a th:href="@{/login}" class="btn">Войти</a>
+</div>
+
+<!-- Блок для авторизованных пользователей -->
+<div th:if="${#authorization.expression('isAuthenticated()')}">
+    <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="admin">
+        <h2>Вы вошли как АДМИНИСТРАТОР</h2>
+        <p>Привет, <span th:text="${#authentication.name}">user</span>!</p>
+        <p>Ваши роли: <span th:text="${#authentication.authorities}">roles</span></p>
+
+        <h3>Доступные действия:</h3>
+        <a th:href="@{/admin}" class="btn">Панель администратора</a>
+        <a th:href="@{/user}" class="btn">Мой профиль</a>
+
+        <form th:action="@{/logout}" method="post" style="margin-top: 20px;">
+            <input type="submit" value="Выйти из системы" class="btn btn-logout">
+        </form>
+    </div>
+
+    <div th:if="${#authorization.expression('hasRole(''ROLE_USER'') and !hasRole(''ROLE_ADMIN'')')}" class="user">
+        <h2>Вы вошли как ПОЛЬЗОВАТЕЛЬ</h2>
+        <p>Привет, <span th:text="${#authentication.name}">user</span>!</p>
+        <p>Ваши роли: <span th:text="${#authentication.authorities}">roles</span></p>
+
+        <h3>Доступные действия:</h3>
+        <a th:href="@{/user}" class="btn">Мой профиль</a>
+
+        <form th:action="@{/logout}" method="post" style="margin-top: 20px;">
+            <input type="submit" value="Выйти из системы" class="btn btn-logout">
+        </form>
+    </div>
+</div>
+
+<!-- Информация о системе -->
+<div style="margin-top: 40px; padding: 15px; background-color: #f8f9fa; border-radius: 5px;">
+    <h3>Тестовые учетные записи:</h3>
+    <ul>
+        <li><strong>Администратор:</strong> username: <code>admin</code>, пароль: <code>admin</code></li>
+        <li><strong>Пользователь:</strong> username: <code>user</code>, пароль: <code>user</code></li>
+    </ul>
+</div>
+</body>
+</html>

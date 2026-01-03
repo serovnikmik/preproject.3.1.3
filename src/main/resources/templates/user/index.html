@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет</title>
+</head>
+<body>
+
+<div th:replace="common/navbar :: navbar"></div>
+
+<h1>Личный кабинет</h1>
+
+<div th:if="${user}">
+    <p>Имя: <span th:text="${user.name}"></span></p>
+    <p>Username: <span th:text="${user.username}"></span></p>
+    <p>Email: <span th:text="${user.email}"></span></p>
+    <p>Возраст: <span th:text="${user.age}"></span></p>
+    <p>Роли:
+        <span th:each="role : ${user.roles}" th:text="${role.name} + ' '"></span>
+    </p>
+</div>
+</body>
+</html>

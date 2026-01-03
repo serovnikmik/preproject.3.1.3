@@ -1,0 +1,15 @@
+<div th:fragment="navbar">
+    <div style="background: #f8f9fa; padding: 10px; margin-bottom: 20px; border-bottom: 1px solid #ddd;">
+        <a th:href="@{/}" style="margin-right: 15px; text-decoration: none; color: #007bff;">
+            Main page
+        </a>
+
+        <span th:if="${#authorization.expression('isAuthenticated()')}">
+            <form th:action="@{/logout}" method="post" style="display: inline;">
+                <button type="submit" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                    Logout
+                </button>
+            </form>
+        </span>
+    </div>
+</div>

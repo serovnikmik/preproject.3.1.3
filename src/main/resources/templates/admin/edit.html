@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактировать пользователя</title>
+</head>
+<body>
+<div th:replace="common/navbar :: navbar"></div>
+<br><br>
+<h1>Редактировать пользователя</h1>
+
+<div style="margin-bottom: 20px;">
+    <a th:href="@{/admin}"> Back to list of users </a>
+</div>
+
+<!-- Форма редактирования -->
+<form th:action="@{/admin/update/{id}(id=${user.id})}" th:object="${user}" method="post">
+    <!-- ID (скрытое поле) -->
+    <input type="hidden" th:field="*{id}">
+
+    <!-- Имя -->
+    <div>
+        <label for="name">Имя:</label><br>
+        <input type="text" th:field="*{name}" id="name">
+        <div style="color:red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+    </div><br>
+
+    <!-- Возраст -->
+    <div>
+        <label for="age">Возраст:</label><br>
+        <input type="number" th:field="*{age}" id="age">
+        <div style="color:red" th:if="${#fields.hasErrors('age')}" th:errors="*{age}"></div>
+    </div><br>
+
+    <!-- Email -->
+    <div>
+        <label for="email">Email:</label><br>
+        <input type="email" th:field="*{email}" id="email">
+        <div style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+    </div><br>
+
+    <!-- Username -->
+    <div>
+        <label for="username">Логин:</label><br>
+        <input type="text" th:field="*{username}" id="username">
+        <div style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+    </div><br>
+
+    <!-- Пароль (оставить пустым, если не менять) -->
+    <div>
+        <label for="password">Новый пароль (оставьте пустым, если не меняется):</label><br>
+        <input type="password" th:field="*{password}" id="password" placeholder="Новый пароль">
+    </div><br>
+
+    <!-- Роли -->
+    <div>
+        <label>Роли:</label><br>
+        <div th:each="role : ${allRoles}">
+            <input type="checkbox"
+                   th:id="${'role_' + role.id + '_' + user.id}"
+                   th:name="roleIds"
+                   th:value="${role.id}"
+                   th:checked="${user.roles.contains(role)}">
+            <label th:for="${'role_' + role.id + '_' + user.id}" th:text="${role.name}"></label>
+        </div>
+    </div><br>
+
+    <!-- Кнопки -->
+    <div>
+        <button type="submit">Сохранить изменения</button>
+        <a th:href="@{/admin}" style="margin-left: 10px;">Отмена</a>
+    </div>
+</form>
+
+<hr>
+
+<!-- Удаление пользователя -->
+<div style="margin-top: 30px; padding: 15px; border: 1px solid #ccc; background: #fff5f5;">
+    <h3 style="color: #dc3545; margin-top: 0;">Опасная зона</h3>
+    <p>Удаление пользователя нельзя отменить. Все данные будут удалены безвозвратно.</p>
+
+    <form th:action="@{/admin/delete/{id}(id=${user.id})}" method="post">
+        <button type="submit" style="background: #dc3545; color: white; border: none; padding: 8px 15px; cursor: pointer;">
+            Удалить пользователя
+        </button>
+    </form>
+</div>
+</body>
+</html>

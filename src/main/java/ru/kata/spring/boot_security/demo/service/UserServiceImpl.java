@@ -40,17 +40,6 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    @PostConstruct
-    @Transactional
-    public void initAdmin() {
-        try {
-            createDefaultAdmin();
-            logger.info("Admin initialization completed via @PostConstruct");
-        } catch (Exception e) {
-            logger.error("Failed to create admin user: {}", e.getMessage());
-        }
-    }
-
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
@@ -74,6 +63,13 @@ public class UserServiceImpl implements UserService {
         userDAO.save(user);
 
         logger.info("User saved successfully: {}", user.getUsername());
+    }
+
+    @Override
+    @Transactional
+    public void save(User user, Set<Role> roles) {
+        user.setRoles(roles);
+        save(user);
     }
 
     @Override
@@ -150,44 +146,6 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         logger.debug("Checking if username exists: {}", username);
         return userDAO.existsByUsername(username);
-    }
-
-    @Override
-    @Transactional
-    public void createDefaultAdmin() {
-        String adminUsername = "admin";
-
-        if (getUserByUsername(adminUsername) == null) {
-            logger.info("Creating default admin user");
-
-            User admin = new User();
-            admin.setUsername(adminUsername);
-            admin.setPassword("admin"); // Будет зашифрован в save()
-            admin.setName("Administrator");
-            admin.setEmail("admin@mail.ru");
-            admin.setAge(30);
-
-            Role adminRole = roleService.getRoleByName("ROLE_ADMIN");
-            Role userRole = roleService.getRoleByName("ROLE_USER");
-
-            if (adminRole == null || userRole == null) {
-                logger.warn("Roles not found. Creating default roles first.");
-                roleService.createDefaultRoles();
-                adminRole = roleService.getRoleByName("ROLE_ADMIN");
-                userRole = roleService.getRoleByName("ROLE_USER");
-            }
-
-            Set<Role> roles = new HashSet<>();
-            roles.add(adminRole);
-            roles.add(userRole);
-            admin.setRoles(roles);
-
-            save(admin);
-
-            logger.info("Default admin created successfully: {}", adminUsername);
-        } else {
-            logger.debug("Admin user already exists: {}", adminUsername);
-        }
     }
 
     @Transactional
