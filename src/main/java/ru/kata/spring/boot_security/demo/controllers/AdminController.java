@@ -42,6 +42,8 @@ public class AdminController {
     @GetMapping("")
     public String adminPage(Model model) {
         model.addAttribute("listOfUsers", userService.getAllUsers());
+        model.addAttribute("user", new User()); // добавляем пустого пользователя для формы
+        model.addAttribute("hasFormErrors", false);
         return "admin/index";
     }
 
@@ -54,9 +56,20 @@ public class AdminController {
     @PostMapping("/create")
     public String create(@ModelAttribute("user") @Valid User user,
                          BindingResult bindingResult,
-                         @RequestParam(value = "roleIds", required = false) List<Long> roleIds){
+                         @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
+                         Model model) {
+
+        // Проверка уникальности username при создании
+        if (userService.getUserByUsername(user.getUsername()) != null) {
+            bindingResult.rejectValue("username", "error.username",
+                    "Пользователь с таким логином уже существует");
+        }
+
         if (bindingResult.hasErrors()){
-            return "admin/create";
+            // При ошибках возвращаем на главную страницу с теми же данными
+            model.addAttribute("listOfUsers", userService.getAllUsers());
+            model.addAttribute("hasFormErrors", true); // устанавливаем флаг ошибок
+            return "admin/index"; // остаемся на той же странице
         }
 
         Set<Role> roles = new HashSet<>();

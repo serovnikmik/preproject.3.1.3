@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="allUsersHeader">
+    <!-- Bootstrap классы: bg-light, border-bottom, p-3 -->
+    <div class="bg-light border-bottom p-3">
+        <div class="container-fluid">
+            <!-- Bootstrap класс: d-flex, justify-content-between -->
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- ЛЕВАЯ часть: username и roles -->
+                <div>
+                    <!-- Username -->
+                    <strong>username : </strong>
+                    <span class="fw-bold text-primary" th:text="${#authentication.name}"></span>
+
+                    <!-- Роли -->
+                    <span class="ms-3">
+                            <strong>with roles : </strong>
+                            <span th:each="role, stat : ${#authentication.principal.authorities}">
+                                <span class="badge bg-secondary ms-1">
+                                    [[${#strings.replace(role.authority, 'ROLE_', '')}]]
+                                </span>
+                            </span>
+                        </span>
+                </div>
+
+                <div>
+                    <form th:action="@{/logout}" method="post">
+                        <!-- Bootstrap классы: btn, btn-outline-danger, btn-sm -->
+                        <button type="submit" class="btn btn-outline-danger btn-sm">
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
