@@ -12,6 +12,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Entity
@@ -39,7 +40,7 @@ public class User implements UserDetails, Serializable {
     // -=-=-=-=-=-=-=-=-=-=-=-=-=
     @Column(name = "username", unique = true, nullable = false)
     @NotEmpty(message = "Username should not be empty")
-    @UniqueUsername
+//    @UniqueUsername
     private String username;
 
     @Column(name = "password", nullable = false)
@@ -173,6 +174,12 @@ public class User implements UserDetails, Serializable {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getRolesAsString() {
+        return this.roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(","));
     }
 
     @Override
