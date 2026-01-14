@@ -47,15 +47,9 @@ public class AdminController {
     @GetMapping("")
     public String adminPage(Model model) {
         model.addAttribute("listOfUsers", userService.getAllUsers());
-        model.addAttribute("user", new User()); // добавляем пустого пользователя для формы
+        model.addAttribute("user", new User());
         model.addAttribute("hasFormErrors", false);
         return "admin/index";
-    }
-
-    @GetMapping("/create")
-    public String create(Model model) {
-        model.addAttribute("user", new User());
-        return "admin/create";
     }
 
     @PostMapping("/create")
@@ -64,14 +58,12 @@ public class AdminController {
                          @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
                          Model model) {
 
-        // Проверка уникальности username при создании
         if (userService.getUserByUsername(user.getUsername()) != null) {
             bindingResult.rejectValue("username", "error.username",
                     "Пользователь с таким логином уже существует");
         }
 
         if (bindingResult.hasErrors()){
-            // При ошибках возвращаем на главную страницу с теми же данными
             model.addAttribute("listOfUsers", userService.getAllUsers());
             model.addAttribute("hasFormErrors", true); // устанавливаем флаг ошибок
             return "admin/index"; // остаемся на той же странице
@@ -97,14 +89,6 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/update/{id}")
-    public String editForm(@PathVariable("id") int id, Model model) {
-        User user = userService.getUserByIdWithRoles(id);
-        model.addAttribute("user", user);
-        model.addAttribute("allRoles", roleService.getAllRoles());
-        return "admin/edit";
-    }
-
     @PostMapping("/update/{id}")
     public String updateUser(@PathVariable("id") int id,
                              @ModelAttribute("user") @Valid User user,
@@ -117,7 +101,6 @@ public class AdminController {
         logger.info("RoleIds: {}", roleIds);
         logger.info("BindingResult errors: {}", bindingResult.hasErrors());
 
-        // Проверка уникальности username (кроме текущего пользователя)
         User existingUser = userService.getUserByUsername(user.getUsername());
         if (existingUser != null && existingUser.getId() != id) {
             bindingResult.rejectValue("username", "error.username",
@@ -129,11 +112,8 @@ public class AdminController {
             logger.info("Validation errors found: {}", bindingResult.getAllErrors());
             return "redirect:/admin";
         }
-
-        // Устанавливаем ID (на всякий случай)
         user.setId(id);
 
-        // Собираем роли
         Set<Role> roles = new HashSet<>();
         if (roleIds != null && !roleIds.isEmpty()) {
             for (Long roleId : roleIds) {
@@ -145,7 +125,6 @@ public class AdminController {
         }
         logger.info("Collected roles: {}", roles);
 
-        // Если пароль пустой - оставляем старый
         if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
             User existing = userService.getUser(id);
             user.setPassword(existing.getPassword());
@@ -156,11 +135,9 @@ public class AdminController {
             logger.info("Password changed, encrypted new password");
         }
 
-        // Устанавливаем роли
         user.setRoles(roles);
         logger.info("Final user object before update: {}", user);
 
-        // Обновляем
         try {
             userService.update(user);
             logger.info("User updated successfully");

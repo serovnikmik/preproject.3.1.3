@@ -10,25 +10,23 @@
     <title>Панель администратора</title>
 </head>
 <body>
-<!-- Header -->
 <div th:replace="common/header"></div>
 
-<!-- Основной контейнер -->
 <div class="container-fluid mt-3">
     <div class="row">
+
         <!-- Sidebar -->
         <div class="col-md-3 col-lg-2">
             <div th:replace="common/sidebar"></div>
         </div>
 
-        <!-- Основной контент -->
         <div class="col-md-9 col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap
             flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                 <h1 class="h2">Admin Panel</h1>
             </div>
 
-            <!-- Здесь будет динамическое содержимое -->
+            <!-- динамическое содержимое -->
             <div id="admin-content">
                 <!-- Навигация -->
                 <ul class="nav nav-tabs" id="adminTab" role="tablist">
@@ -52,7 +50,6 @@
                     </li>
                 </ul>
 
-                <!-- Содержимое табов -->
                 <div class="tab-content" id="adminTabContent">
                     <!-- Таблица пользователей -->
                     <div class="tab-pane fade" th:classappend="${not hasFormErrors} ? 'show active' : ''"
@@ -132,9 +129,9 @@
                         <div class="mt-3">
                             <h3 class="mb-4">Add new user</h3>
 
-                            <!-- Убрал class="needs-validation" и все HTML5 валидационные атрибуты -->
                             <form th:method="POST" th:action="@{/admin/create}"
                                   th:object="${user}">
+
                                 <!-- Имя -->
                                 <div class="mb-3">
                                     <label for="name" class="form-label">First name</label>

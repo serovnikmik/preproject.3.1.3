@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<div th:fragment="rolesSidebar(currentRole='ROLE_USER')">
-    <!-- Боковая панель с ролями -->
+<div th:fragment="rolesSidebar">
     <div class="card h-100"
          style="width: 100%; background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 0;">
         <div class="card-header bg-primary text-white">
@@ -15,7 +14,7 @@
                 <a th:href="@{/user}"
                    th:classappend="${currentRole == 'ROLE_USER'} ? 'list-group-item active' : 'list-group-item'"
                    class="list-group-item list-group-item-action"
-                   style="background-color: transparent; border-color: #dee2e6;">
+                   th:if="${userHasUserRole}">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <i class="bi bi-person me-2"></i>
@@ -27,7 +26,7 @@
                 </a>
 
                 <!-- Роль ADMIN -->
-                <a th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}"
+                <a th:if="${userHasAdminRole}"
                    th:href="@{/admin}"
                    th:classappend="${currentRole == 'ROLE_ADMIN'} ? 'list-group-item active' : 'list-group-item'"
                    class="list-group-item list-group-item-action">

@@ -10,6 +10,6 @@ public class MainController {
 
     @GetMapping("/")
     public String homePage() {
-        return "common/index";  // ← templates/index.html (в корне)
+        return "common/index";
     }
 }

@@ -59,7 +59,6 @@ public class DataInitializer implements CommandLineRunner {
     public void createDefaultAdminDirectly() {
         String adminUsername = "admin";
 
-        // Проверяем через EntityManager
         Long count = entityManager.createQuery(
                         "SELECT COUNT(u) FROM User u WHERE u.username = :username",
                         Long.class
@@ -70,7 +69,6 @@ public class DataInitializer implements CommandLineRunner {
         if (count == 0) {
             logger.info("Creating admin user directly...");
 
-            // Получаем роли
             Role adminRole = entityManager.createQuery(
                             "SELECT r FROM Role r WHERE r.name = 'ROLE_ADMIN'", Role.class)
                     .getSingleResult();
@@ -79,7 +77,6 @@ public class DataInitializer implements CommandLineRunner {
                             "SELECT r FROM Role r WHERE r.name = 'ROLE_USER'", Role.class)
                     .getSingleResult();
 
-            // Создаем пользователя
             User admin = new User();
             admin.setUsername(adminUsername);
             admin.setPassword(passwordEncoder.encode("admin"));
@@ -92,7 +89,6 @@ public class DataInitializer implements CommandLineRunner {
             roles.add(userRole);
             admin.setRoles(roles);
 
-            // Сохраняем
             entityManager.persist(admin);
 
             logger.info("Admin created successfully");
@@ -103,7 +99,6 @@ public class DataInitializer implements CommandLineRunner {
     public void createDefaultUserDirectly() {
         String userUsername = "user";
 
-        // Проверяем через EntityManager
         Long count = entityManager.createQuery(
                         "SELECT COUNT(u) FROM User u WHERE u.username = :username",
                         Long.class
@@ -114,12 +109,10 @@ public class DataInitializer implements CommandLineRunner {
         if (count == 0) {
             logger.info("Creating default user directly...");
 
-            // Получаем роли
             Role userRole = entityManager.createQuery(
                             "SELECT r FROM Role r WHERE r.name = 'ROLE_USER'", Role.class)
                     .getSingleResult();
 
-            // Создаем пользователя
             User admin = new User();
             admin.setUsername(userUsername);
             admin.setPassword(passwordEncoder.encode("user"));
@@ -131,7 +124,6 @@ public class DataInitializer implements CommandLineRunner {
             roles.add(userRole);
             admin.setRoles(roles);
 
-            // Сохраняем
             entityManager.persist(admin);
 
             logger.info("Default user created successfully");

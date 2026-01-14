@@ -15,20 +15,14 @@
     </style>
 </head>
 <body>
-<!--<div th:if="${#authorization.expression('isAuthenticated()')}">-->
-<!--    <div th:replace="common/navbar :: navbar"></div>-->
-<!--</div>-->
-<!--<br><br>-->
 <h1>Добро пожаловать в систему!</h1>
 
-<!-- Блок для НЕ авторизованных пользователей -->
 <div th:if="${#authorization.expression('!isAuthenticated()')}" class="guest">
     <h2>Вы не авторизованы</h2>
     <p>Пожалуйста, войдите в систему:</p>
     <a th:href="@{/login}" class="btn">Войти</a>
 </div>
 
-<!-- Блок для авторизованных пользователей -->
 <div th:if="${#authorization.expression('isAuthenticated()')}">
     <div th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}" class="admin">
         <h2>Вы вошли как АДМИНИСТРАТОР</h2>
