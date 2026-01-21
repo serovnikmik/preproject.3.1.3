@@ -170,13 +170,9 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found: " + username);
         }
-//        log.debug("User found: {} with roles: {}", username, user.getRoles());
         log.debug("User found: {} with roles: {} password is \"user\": {}",
                 username, user.getRoles(), passwordEncoder.matches("user", user.getPassword()));
-//        log.debug("User encoded password: {}, \"user\" encoded: {}",
-//                user.getPassword(), passwordEncoder.encode("user"));
-//        log.debug("\"user\" encoded matches?: {}, ",
-//                passwordEncoder.matches("user", passwordEncoder.encode("user")));
+
         return user;
     }
 }

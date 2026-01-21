@@ -11,9 +11,6 @@ import java.util.Collection;
 @ControllerAdvice
 public class SidebarControllerAdvice {
 
-    /**
-     * Добавляет текущую роль в модель на основе URL
-     */
     @ModelAttribute("currentRole")
     public String getCurrentRole(HttpServletRequest request) {
         String uri = request.getRequestURI();
@@ -29,9 +26,6 @@ public class SidebarControllerAdvice {
         return "ROLE_USER";
     }
 
-    /**
-     * Опционально: добавляем информацию о всех ролях пользователя
-     */
     @ModelAttribute("userHasAdminRole")
     public boolean userHasAdminRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -43,9 +37,6 @@ public class SidebarControllerAdvice {
         return false;
     }
 
-    /**
-     * Опционально: добавляем все роли пользователя
-     */
     @ModelAttribute("userHasUserRole")
     public boolean userHasUserRole() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
