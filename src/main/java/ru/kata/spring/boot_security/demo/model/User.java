@@ -38,7 +38,7 @@ public class User implements UserDetails, Serializable {
     // -=-=-=-=-=-=-=-=-=-=-=-=-=
     @Column(name = "username", unique = true, nullable = false)
     @NotEmpty(message = "Username should not be empty")
-//    @UniqueUsername
+    @UniqueUsername
     private String username;
 
     @Column(name = "password", nullable = false)

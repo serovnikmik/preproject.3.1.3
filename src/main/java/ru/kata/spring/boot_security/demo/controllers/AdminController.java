@@ -1,12 +1,11 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,11 +28,8 @@ import java.util.Set;
 @RequestMapping("/admin")
 public class AdminController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
-
     private UserService userService;
     private RoleService roleService;
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public void setUserService(UserService userService){
@@ -43,11 +39,6 @@ public class AdminController {
     @Autowired
     public void setRoleService(RoleService roleService){
         this.roleService = roleService;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder){
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("")
@@ -99,25 +90,20 @@ public class AdminController {
     public String updateUser(@PathVariable("id") int id,
                              @ModelAttribute("user") @Valid User user,
                              BindingResult bindingResult,
-                             @RequestParam(value = "roleIds", required = false) List<Long> roleIds) {
-
-        logger.info("=== UPDATE USER START ===");
-        logger.info("ID: {}", id);
-        logger.info("User from form: {}", user);
-        logger.info("RoleIds: {}", roleIds);
-        logger.info("BindingResult errors: {}", bindingResult.hasErrors());
+                             @RequestParam(value = "roleIds", required = false) List<Long> roleIds,
+                             Model model) {
 
         User existingUser = userService.getUserByUsername(user.getUsername());
         if (existingUser != null && existingUser.getId() != id) {
             bindingResult.rejectValue("username", "error.username",
                     "Пользователь с таким логином уже существует");
-            logger.info("Username already exists error");
         }
 
         if (bindingResult.hasErrors()) {
-            logger.info("Validation errors found: {}", bindingResult.getAllErrors());
-            return "redirect:/admin";
+            model.addAttribute("allRoles", roleService.getAllRoles());
+            return "admin/edit";
         }
+
         user.setId(id);
 
         Set<Role> roles = new HashSet<>();
@@ -129,29 +115,10 @@ public class AdminController {
                 }
             }
         }
-        logger.info("Collected roles: {}", roles);
-
-        if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-            User existing = userService.getUser(id);
-            user.setPassword(existing.getPassword());
-            logger.info("Password is empty, keeping old password");
-        } else {
-            // Шифруем новый пароль
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            logger.info("Password changed, encrypted new password");
-        }
-
         user.setRoles(roles);
-        logger.info("Final user object before update: {}", user);
 
-        try {
-            userService.update(user);
-            logger.info("User updated successfully");
-        } catch (Exception e) {
-            logger.error("Error updating user: ", e);
-        }
+        userService.update(user);
 
-        logger.info("=== UPDATE USER END ===");
         return "redirect:/admin";
     }
 
